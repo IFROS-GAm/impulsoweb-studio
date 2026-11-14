@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>InnovaServicios &amp; Propiedades — Catálogo y Cotizador Rápido</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+  </style>
+</head>
+<body class="bg-zinc-950 text-zinc-100 antialiased">
+
+  <!-- Banner Demo -->
+  <div class="bg-violet-500 text-white text-xs font-bold py-1.5 px-4 flex flex-wrap items-center justify-between gap-2">
+    <span>⚡ DEMO FUNCIONAL PARA INMOBILIARIAS, TALLERES, REMODELACIÓN &amp; SERVICIOS TÉCNICOS</span>
+    <div class="flex items-center gap-3">
+      <a href="../../agencia-portafolio/index.html" class="underline hover:no-underline">← Volver al Portafolio</a>
+      <a href="../../index.html" class="underline hover:no-underline">Panel Maestro</a>
+    </div>
+  </div>
+
+  <!-- Navbar -->
+  <header class="sticky top-0 z-40 bg-zinc-950/90 backdrop-blur border-b border-zinc-800">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-xl">🏢</div>
+        <div>
+          <h1 class="font-extrabold text-white leading-none">InnovaServicios</h1>
+          <p class="text-xs text-violet-400 mt-1">Soluciones Residenciales, Talleres &amp; Bienes Raíces</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <a href="#catalogo" class="hidden sm:inline text-sm text-zinc-300 hover:text-white">Catálogo</a>
+        <a href="#cotizador" class="px-4 py-2 rounded-xl bg-violet-500 hover:bg-violet-400 text-white font-bold text-sm transition">
+          Cotizar en 15s
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="max-w-6xl mx-auto px-4 py-12 lg:py-16">
+    <div class="rounded-3xl bg-gradient-to-br from-violet-950/60 via-zinc-900 to-zinc-950 border border-violet-500/30 p-8 sm:p-12 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+      <div class="max-w-2xl">
+        <span class="px-3 py-1 rounded-full bg-violet-500/20 text-violet-300 text-xs font-bold border border-violet-500/30">GARANTÍA POR ESCRITO · ATENCIÓN EL MISMO DÍA</span>
+        <h2 class="text-3xl sm:text-5xl font-black text-white mt-4 leading-tight">
+          Catálogo de servicios con <span class="text-violet-400">cotizador instantáneo</span>
+        </h2>
+        <p class="text-zinc-300 mt-4">Tus clientes filtran lo que buscan, calculan un estimado transparente en segundos y te escriben por WhatsApp con todos sus datos ya listos para cerrar la venta.</p>
+      </div>
+      <div class="grid grid-cols-2 gap-4 shrink-0">
+        <div class="p-4 rounded-2xl bg-zinc-950/80 border border-zinc-800 text-center">
+          <p class="text-2xl font-black text-white">+450</p>
+          <p class="text-xs text-zinc-400">Proyectos entregados</p>
+        </div>
+        <div class="p-4 rounded-2xl bg-zinc-950/80 border border-zinc-800 text-center">
+          <p class="text-2xl font-black text-violet-400">12 meses</p>
+          <p class="text-xs text-zinc-400">Garantía de servicio</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Filtro y Catálogo -->
+  <section id="catalogo" class="max-w-6xl mx-auto px-4 pb-16">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+      <div>
+        <h3 class="text-2xl font-extrabold text-white">Catálogo Destacado</h3>
+        <p class="text-xs text-zinc-400 mt-1">Filtra por tipo de servicio o propiedad disponible</p>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <button onclick="filterItems('Todos', this)" class="srv-tab px-4 py-2 rounded-xl text-xs font-bold bg-violet-500 text-white">Todos</button>
+        <button onclick="filterItems('Remodelación', this)" class="srv-tab px-4 py-2 rounded-xl text-xs font-semibold bg-zinc-900 text-zinc-300 border border-zinc-800">Remodelación</button>
+        <button onclick="filterItems('Mantenimiento', this)" class="srv-tab px-4 py-2 rounded-xl text-xs font-semibold bg-zinc-900 text-zinc-300 border border-zinc-800">Mantenimiento / Taller</button>
+        <button onclick="filterItems('Inmuebles', this)" class="srv-tab px-4 py-2 rounded-xl text-xs font-semibold bg-zinc-900 text-zinc-300 border border-zinc-800">Propiedades</button>
+      </div>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6" id="itemsGrid"></div>
+  </section>
+
+  <!-- Cotizador Rápido -->
+  <section id="cotizador" class="max-w-4xl mx-auto px-4 pb-20">
+    <div class="rounded-3xl bg-zinc-900 border border-zinc-800 p-6 sm:p-10 shadow-2xl">
+      <div class="text-center mb-8">
+        <span class="text-xs font-bold uppercase tracking-widest text-violet-400">Presupuesto Express</span>
+        <h3 class="text-2xl sm:text-3xl font-extrabold text-white mt-1">Calculadora de Cotización</h3>
+        <p class="text-sm text-zinc-400 mt-1">Estima el rango de inversión y solicita visita técnica o asesoría sin compromiso.</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-zinc-300 mb-1.5">Tipo de servicio requerido</label>
+            <select id="qService" onchange="calcEstimate()" class="w-full rounded-xl bg-zinc-950 border border-zinc-700 px-3.5 py-2.5 text-sm text-white">
+              <option value="18">Pintura e Impermeabilización ($18/m² base)</option>
+              <option value="45">Instalación Eléctrica / Clima ($45/punto)</option>
+              <option value="65">Mantenimiento Automotriz / Flotilla ($65 base)</option>
+              <option value="120">Asesoría &amp; Gestión Inmobiliaria ($120 base)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-zinc-300 mb-1.5">
+              Superficie / Cantidad estimada: <span id="unitsLabel" class="text-violet-400 font-bold">20 unidades / m²</span>
+            </label>
+            <input id="qUnits" type="range" min="1" max="100" value="20" oninput="calcEstimate()" class="w-full accent-violet-500" />
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-zinc-300 mb-1.5">Urgencia</label>
+            <select id="qUrgency" onchange="calcEstimate()" class="w-full rounded-xl bg-zinc-950 border border-zinc-700 px-3.5 py-2.5 text-sm text-white">
+              <option value="1">Programado (3–5 días)</option>
+              <option value="1.2">Prioritario (24 horas, +20%)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="rounded-2xl bg-zinc-950 border border-zinc-800 p-6 flex flex-col justify-between space-y-4">
+          <div>
+            <p class="text-xs font-bold uppercase text-zinc-400">Rango Estimado</p>
+            <p id="estRange" class="text-3xl sm:text-4xl font-black text-violet-400 mt-2">$320 – $400 USD</p>
+            <p class="text-xs text-zinc-500 mt-1">*Precio final sujeto a inspección sin costo.</p>
+          </div>
+
+          <div class="space-y-3">
+            <input id="qClient" type="text" placeholder="Tu nombre o empresa" class="w-full rounded-xl bg-zinc-900 border border-zinc-700 px-3.5 py-2.5 text-sm text-white" />
+            <input id="qZone" type="text" placeholder="Colonia / Zona de atención" class="w-full rounded-xl bg-zinc-900 border border-zinc-700 px-3.5 py-2.5 text-sm text-white" />
+            <button onclick="sendEstimate()" class="w-full py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-black text-sm transition">
+              Simular Envío de Cotización →
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const ITEMS = [
+      { title: "Remodelación Integral de Locales", cat: "Remodelación", price: "Desde $450 USD", badge: "Llave en mano", desc: "Tablaroca, iluminación LED, pisos vinílicos y pintura comercial en tiempo récord." },
+      { title: "Mantenimiento Preventivo A/C", cat: "Mantenimiento", price: "$39 USD", badge: "Express", desc: "Limpieza profunda de serpentín, revisión de gas refrigerante y drenaje." },
+      { title: "Departamento Vista Parque (2 Hab)", cat: "Inmuebles", price: "$780 USD / mes", badge: "Disponible", desc: "85 m², cocina equipada, balcón, seguridad 24/7 y 1 lugar de estacionamiento." },
+      { title: "Afinación Mayor & Scanner OBD2", cat: "Mantenimiento", price: "$95 USD", badge: "Garantizado", desc: "Cambio de aceite sintético, filtros, bujías y diagnóstico computarizado completo." },
+      { title: "Impermeabilización Acrílica 10 Años", cat: "Remodelación", price: "$14 USD / m²", badge: "Top Ventas", desc: "Sellado de grietas, doble capa fibratada y garantía contra filtraciones." },
+      { title: "Oficina Privada Zona Corporativa", cat: "Inmuebles", price: "$1,150 USD / mes", badge: "Amueblada", desc: "65 m² listos para equipo de 8 personas, sala de juntas e internet de fibra." }
+    ];
+
+    let activeCat = "Todos";
+
+    function filterItems(cat, btn) {
+      activeCat = cat;
+      document.querySelectorAll('.srv-tab').forEach(b => {
+        b.className = "srv-tab px-4 py-2 rounded-xl text-xs font-semibold bg-zinc-900 text-zinc-300 border border-zinc-800";
+      });
+      btn.className = "srv-tab px-4 py-2 rounded-xl text-xs font-bold bg-violet-500 text-white";
+      renderItems();
+    }
+
+    function renderItems() {
+      const list = activeCat === "Todos" ? ITEMS : ITEMS.filter(i => i.cat === activeCat);
+      document.getElementById('itemsGrid').innerHTML = list.map(i => `
+        <div class="rounded-2xl bg-zinc-900 border border-zinc-800 p-6 flex flex-col justify-between hover:border-violet-500/60 transition">
+          <div>
+            <div class="flex items-center justify-between gap-2">
+              <span class="text-xs font-semibold text-violet-400">${i.cat}</span>
+              <span class="px-2.5 py-0.5 rounded-full bg-zinc-800 text-zinc-300 text-[11px] font-bold">${i.badge}</span>
+            </div>
+            <h4 class="text-lg font-bold text-white mt-2">${i.title}</h4>
+            <p class="text-xl font-black text-white mt-2">${i.price}</p>
+            <p class="text-xs text-zinc-400 mt-2 leading-relaxed">${i.desc}</p>
+          </div>
+          <button onclick="contactItem('${i.title} (${i.price})')" class="mt-6 w-full py-2.5 rounded-xl bg-zinc-800 hover:bg-emerald-500 hover:text-zinc-950 text-white text-xs font-bold transition">
+            Simular Solicitud de Info →
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function contactItem(name) {
+      const msg = `Hola! Me interesa recibir más información sobre:\n*${name}*`;
+      showDemoQuote(msg);
+    }
+
+    function calcEstimate() {
+      const base = parseFloat(document.getElementById('qService').value);
+      const units = parseInt(document.getElementById('qUnits').value, 10);
+      const mult = parseFloat(document.getElementById('qUrgency').value);
+      document.getElementById('unitsLabel').textContent = `${units} unidades / m²`;
+      const mid = Math.round(base * units * mult);
+      const low = Math.round(mid * 0.9);
+      const high = Math.round(mid * 1.15);
+      document.getElementById('estRange').textContent = `$${low.toLocaleString()} – $${high.toLocaleString()} USD`;
+    }
+
+    function sendEstimate() {
+      const sel = document.getElementById('qService');
+      const serviceText = sel.options[sel.selectedIndex].text;
+      const units = document.getElementById('qUnits').value;
+      const est = document.getElementById('estRange').textContent;
+      const client = document.getElementById('qClient').value.trim() || "Cliente";
+      const zone = document.getElementById('qZone').value.trim() || "No especificada";
+
+      const msg = `🏢 *SOLICITUD DE COTIZACIÓN — INNOVASERVICIOS*\n\n👤 *Nombre:* ${client}\n📍 *Zona:* ${zone}\n🛠️ *Servicio:* ${serviceText}\n📐 *Cantidad/m²:* ${units}\n💰 *Estimado web:* ${est}\n\n¿Podemos agendar una visita o llamada?`;
+      showDemoQuote(msg);
+    }
+
+    function showDemoQuote(msg) {
+      let modal = document.getElementById('demoQuoteModal');
+      if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'demoQuoteModal';
+        modal.className = 'fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4';
+        modal.innerHTML = `
+          <div class="bg-zinc-900 border border-zinc-700 rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+            <div class="flex justify-between items-center">
+              <span class="px-2.5 py-1 rounded-full bg-violet-500/20 text-violet-300 text-xs font-bold">✓ Simulación de Lead</span>
+              <button onclick="document.getElementById('demoQuoteModal').classList.add('hidden')" class="text-zinc-400 hover:text-white text-xl">&times;</button>
+            </div>
+            <h3 class="text-lg font-extrabold text-white">Así recibe tu empresa cada cotización</h3>
+            <pre id="demoQuoteBody" class="bg-zinc-950 border border-zinc-800 rounded-2xl p-4 text-xs text-zinc-200 whitespace-pre-wrap font-sans leading-relaxed max-h-64 overflow-y-auto"></pre>
+            <div class="flex flex-col gap-2">
+              <a href="mailto:ifrosg@gmail.com?subject=Quiero%20una%20Web%20con%20Cotizador%20para%20mi%20Empresa" class="w-full py-3 rounded-xl bg-violet-500 hover:bg-violet-400 text-white font-black text-xs text-center transition">
+                Quiero esta web para mi negocio (Email) →
+              </a>
+              <button onclick="document.getElementById('demoQuoteModal').classList.add('hidden')" class="w-full py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-semibold">
+                Seguir probando la demo
+              </button>
+            </div>
+          </div>`;
+        document.body.appendChild(modal);
+      }
+      document.getElementById('demoQuoteBody').textContent = msg;
+      modal.classList.remove('hidden');
+    }
+
+    renderItems();
+    calcEstimate();
+  </script>
+</body>
+</html>

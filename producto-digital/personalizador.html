@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WhatsApp Store Builder Pro — Generador de Tiendas y Menús</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 antialiased">
+
+  <!-- Barra superior -->
+  <header class="sticky top-0 z-40 bg-slate-950/90 backdrop-blur border-b border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 py-3.5 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <a href="../index.html" class="text-xs px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700">← Panel Maestro</a>
+        <div>
+          <h1 class="font-extrabold text-white text-base sm:text-lg leading-none">WhatsApp Store Builder Pro</h1>
+          <p class="text-xs text-violet-400 mt-1">Crea y exporta una tienda/menú HTML lista para cliente en 5 minutos</p>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-2">
+        <a href="WhatsApp_Store_Builder_Pro_v1.zip" download class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition">
+          📦 Descargar .ZIP (Gumroad)
+        </a>
+        <button onclick="downloadGeneratedSite()" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs sm:text-sm transition shadow-lg shadow-emerald-500/20">
+          ⬇ Descargar Sitio Web Listo (.html)
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 py-6 grid lg:grid-cols-12 gap-6 items-start">
+
+    <!-- COLUMNA IZQUIERDA: EDITOR -->
+    <section class="lg:col-span-5 space-y-5">
+      <!-- Config Negocio -->
+      <div class="rounded-2xl bg-slate-900 border border-slate-800 p-5 space-y-4">
+        <div class="flex items-center justify-between">
+          <h2 class="font-bold text-white text-sm uppercase tracking-wider">1. Datos del Negocio</h2>
+          <div class="flex gap-2">
+            <button onclick="loadPreset('restaurante')" class="text-[11px] px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-amber-300">Preset Comida</button>
+            <button onclick="loadPreset('tienda')" class="text-[11px] px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-cyan-300">Preset Tienda</button>
+          </div>
+        </div>
+
+        <div class="grid sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">Nombre del negocio</label>
+            <input id="bizName" type="text" oninput="updateConfig()" class="w-full rounded-xl bg-slate-950 border border-slate-700 px-3 py-2 text-sm text-white" />
+          </div>
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">WhatsApp (con código país)</label>
+            <input id="bizPhone" type="text" oninput="updateConfig()" placeholder="5215512345678" class="w-full rounded-xl bg-slate-950 border border-slate-700 px-3 py-2 text-sm text-white font-mono" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">Eslogan o descripción corta</label>
+          <input id="bizSlogan" type="text" oninput="updateConfig()" class="w-full rounded-xl bg-slate-950 border border-slate-700 px-3 py-2 text-sm text-white" />
+        </div>
+
+        <div class="grid grid-cols-3 gap-3">
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">Color principal</label>
+            <input id="bizColor" type="color" oninput="updateConfig()" class="w-full h-10 rounded-xl bg-slate-950 border border-slate-700 p-1 cursor-pointer" />
+          </div>
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">Moneda</label>
+            <select id="bizCurrency" onchange="updateConfig()" class="w-full h-10 rounded-xl bg-slate-950 border border-slate-700 px-2.5 text-sm text-white">
+              <option value="$ USD">$ USD</option>
+              <option value="$ MXN">$ MXN</option>
+              <option value="$ COP">$ COP</option>
+              <option value="S/ PEN">S/ PEN</option>
+              <option value="$ ARS">$ ARS</option>
+              <option value="$ CLP">$ CLP</option>
+              <option value="€ EUR">€ EUR</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">Costo Envío</label>
+            <input id="bizDelivery" type="number" min="0" step="0.5" oninput="updateConfig()" class="w-full h-10 rounded-xl bg-slate-950 border border-slate-700 px-3 text-sm text-white" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Agregar Producto -->
+      <div class="rounded-2xl bg-slate-900 border border-slate-800 p-5 space-y-3">
+        <h2 class="font-bold text-white text-sm uppercase tracking-wider">2. Agregar Producto o Servicio</h2>
+        <div class="grid grid-cols-4 gap-2">
+          <input id="pEmoji" type="text" value="🛍️" placeholder="Emoji" class="rounded-xl bg-slate-950 border border-slate-700 px-3 py-2 text-center text-base text-white" />
+          <input id="pName" type="text" placeholder="Nombre del producto" class="col-span-3 rounded-xl bg-slate-950 border border-slate-700 px-3 py-2 text-sm text-white" />
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <input id="pCat" type="text" placeholder="Categoría (Ej: Combos)" class="rounded-xl bg-slate-950 border border-slate-700 px-3 py-2 text-sm text-white" />
+          <input id="pPrice" type="number" step="0.01" min="0" placeholder="Precio (Ej: 12.50)" class="rounded-xl bg-slate-950 border border-slate-700 px-3 py-2 text-sm text-white" />
+        </div>
+        <input id="pDesc" type="text" placeholder="Descripción corta (ingredientes, talla o detalles)" class="w-full rounded-xl bg-slate-950 border border-slate-700 px-3 py-2 text-sm text-white" />
+        <button onclick="addProduct()" class="w-full py-2.5 rounded-xl bg-violet-500 hover:bg-violet-400 text-white font-bold text-sm transition">
+          + Agregar al Catálogo
+        </button>
+      </div>
+
+      <!-- Lista de Productos Actuales -->
+      <div class="rounded-2xl bg-slate-900 border border-slate-800 p-5 space-y-3">
+        <div class="flex items-center justify-between">
+          <h2 class="font-bold text-white text-sm uppercase tracking-wider">3. Productos (<span id="prodCount">0</span>)</h2>
+          <span class="text-xs text-slate-400">Edita o elimina al instante</span>
+        </div>
+        <div id="productsList" class="space-y-2 max-h-72 overflow-y-auto pr-1"></div>
+      </div>
+    </section>
+
+    <!-- COLUMNA DERECHA: VISTA PREVIA EN VIVO -->
+    <section class="lg:col-span-7 space-y-3">
+      <div class="flex items-center justify-between bg-slate-900 border border-slate-800 rounded-2xl px-4 py-2.5">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span class="text-xs font-bold text-slate-200">Vista Previa en Vivo (interactiva)</span>
+        </div>
+        <div class="flex gap-2">
+          <button onclick="setPreviewWidth('100%')" class="text-xs px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200">💻 Escritorio</button>
+          <button onclick="setPreviewWidth('390px')" class="text-xs px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200">📱 Celular</button>
+        </div>
+      </div>
+
+      <div class="rounded-3xl bg-slate-900 border border-slate-800 p-3 flex justify-center overflow-hidden">
+        <iframe id="previewFrame" title="Vista previa de tienda" class="w-full h-[760px] rounded-2xl bg-slate-950 border border-slate-800 transition-all duration-300"></iframe>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    const STORAGE_KEY = 'whatsapp_store_builder_v1';
+
+    const PRESETS = {
+      restaurante: {
+        name: "Tacos & Grill El Patrón",
+        slogan: "Auténtico sabor al carbón · Pedidos directos sin comisiones",
+        phone: "5215512345678",
+        color: "#f97316",
+        currency: "$ USD",
+        delivery: 2,
+        products: [
+          { id: 1, emoji: "🌮", name: "Orden 4 Tacos al Pastor", cat: "Tacos", price: 6.50, desc: "Con piña asada, cilantro, cebolla y salsas de la casa." },
+          { id: 2, emoji: "🧀", name: "Gringa Especial de Sirloin", cat: "Especialidades", price: 7.50, desc: "Tortilla de harina grande con queso fundido y carne asada." },
+          { id: 3, emoji: "🥑", name: "Guacamole con Totopos", cat: "Entradas", price: 4.00, desc: "Recién machacado con pico de gallo y chicharrón." },
+          { id: 4, emoji: "🥤", name: "Agua Fresca 1 Litro", cat: "Bebidas", price: 3.00, desc: "Horchata artesanal o Jamaica natural bien fría." }
+        ]
+      },
+      tienda: {
+        name: "UrbanStyle Boutique",
+        slogan: "Moda urbana & accesorios · Envíos el mismo día",
+        phone: "573001234567",
+        color: "#10b981",
+        currency: "$ USD",
+        delivery: 4,
+        products: [
+          { id: 1, emoji: "👕", name: "Playera Oversize Heavy", cat: "Camisetas", price: 22.00, desc: "100% algodón peinado 240g, tallas S, M, L y XL." },
+          { id: 2, emoji: "🧥", name: "Hoodie Minimalista Negro", cat: "Sudaderas", price: 38.00, desc: "Felpa gruesa premium, capucha doble y bolsillo canguro." },
+          { id: 3, emoji: "🧢", name: "Gorra Street Classic", cat: "Accesorios", price: 15.00, desc: "Visera curva ajustable con bordado frontal." }
+        ]
+      }
+    };
+
+    let state = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null') || structuredClone(PRESETS.restaurante);
+
+    function syncInputs() {
+      document.getElementById('bizName').value = state.name;
+      document.getElementById('bizSlogan').value = state.slogan;
+      document.getElementById('bizPhone').value = state.phone;
+      document.getElementById('bizColor').value = state.color;
+      document.getElementById('bizCurrency').value = state.currency;
+      document.getElementById('bizDelivery').value = state.delivery;
+    }
+
+    function loadPreset(key) {
+      state = structuredClone(PRESETS[key]);
+      saveAndRender();
+      syncInputs();
+    }
+
+    function updateConfig() {
+      state.name = document.getElementById('bizName').value || "Mi Negocio";
+      state.slogan = document.getElementById('bizSlogan').value || "Pedidos directos por WhatsApp";
+      state.phone = document.getElementById('bizPhone').value.replace(/\D/g, '') || "5215500000000";
+      state.color = document.getElementById('bizColor').value || "#10b981";
+      state.currency = document.getElementById('bizCurrency').value || "$ USD";
+      state.delivery = parseFloat(document.getElementById('bizDelivery').value) || 0;
+      saveAndRender();
+    }
+
+    function addProduct() {
+      const emoji = document.getElementById('pEmoji').value.trim() || "🛍️";
+      const name = document.getElementById('pName').value.trim();
+      const cat = document.getElementById('pCat').value.trim() || "General";
+      const price = parseFloat(document.getElementById('pPrice').value);
+      const desc = document.getElementById('pDesc').value.trim() || "Producto disponible para pedido inmediato.";
+
+      if (!name || isNaN(price)) {
+        alert("Ingresa al menos el nombre y un precio numérico válido.");
+        return;
+      }
+
+      state.products.push({ id: Date.now(), emoji, name, cat, price, desc });
+      document.getElementById('pName').value = '';
+      document.getElementById('pPrice').value = '';
+      document.getElementById('pDesc').value = '';
+      saveAndRender();
+    }
+
+    function removeProduct(id) {
+      state.products = state.products.filter(p => p.id !== id);
+      saveAndRender();
+    }
+
+    function renderProductsList() {
+      document.getElementById('prodCount').textContent = state.products.length;
+      const box = document.getElementById('productsList');
+      if (!state.products.length) {
+        box.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">Sin productos aún. Agrega uno arriba.</p>`;
+        return;
+      }
+      box.innerHTML = state.products.map(p => `
+        <div class="flex items-center justify-between gap-3 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5">
+          <div class="min-w-0">
+            <p class="text-sm font-bold text-white truncate">${p.emoji} ${p.name}</p>
+            <p class="text-[11px] text-slate-400">${p.cat} · ${state.currency.split(' ')[0]}${Number(p.price).toFixed(2)}</p>
+          </div>
+          <button onclick="removeProduct(${p.id})" class="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-red-500/20 text-slate-400 hover:text-red-400 text-xs font-bold transition">✕</button>
+        </div>
+      `).join('');
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function buildStandaloneHTML() {
+      const safeData = JSON.stringify(state).replace(/<\/script/gi, '<\\/script');
+      return `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>${escapeHtml(state.name)} — Catálogo &amp; Pedidos WhatsApp</title>
+  <script src="https://cdn.tailwindcss.com"><\/script>
+  <style>
+    :root { --brand: ${state.color}; }
+    body { font-family: system-ui, -apple-system, sans-serif; }
+    .brand-bg { background-color: var(--brand); }
+    .brand-text { color: var(--brand); }
+    .brand-border { border-color: var(--brand); }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 antialiased min-h-screen">
+  <header class="sticky top-0 z-30 bg-slate-950/90 backdrop-blur border-b border-slate-800">
+    <div class="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between gap-3">
+      <div>
+        <h1 class="text-lg sm:text-xl font-black text-white leading-tight">${escapeHtml(state.name)}</h1>
+        <p class="text-xs text-slate-400">${escapeHtml(state.slogan)}</p>
+      </div>
+      <a href="#carrito" class="px-4 py-2 rounded-xl brand-bg text-slate-950 font-black text-xs sm:text-sm shadow-lg shrink-0">
+        🛒 Pedido (<span id="topCount">0</span>)
+      </a>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-4 py-6 grid md:grid-cols-3 gap-6 items-start">
+    <div class="md:col-span-2 space-y-4">
+      <div id="catBar" class="flex gap-2 overflow-x-auto pb-1"></div>
+      <div id="grid" class="grid sm:grid-cols-2 gap-3.5"></div>
+    </div>
+
+    <aside id="carrito" class="rounded-2xl bg-slate-900 border border-slate-800 p-5 sticky top-24 space-y-4">
+      <h2 class="font-extrabold text-white text-base border-b border-slate-800 pb-3">Tu Pedido</h2>
+      <div id="cartList" class="space-y-2.5 text-sm"></div>
+      <div id="orderBox" class="hidden space-y-3 pt-3 border-t border-slate-800">
+        <div class="grid grid-cols-2 gap-2">
+          <button type="button" id="mDom" onclick="setMode('domicilio')" class="py-2 rounded-lg text-xs font-bold brand-bg text-slate-950">Domicilio</button>
+          <button type="button" id="mLoc" onclick="setMode('local')" class="py-2 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300">Recoger</button>
+        </div>
+        <input id="cName" type="text" placeholder="Tu nombre" class="w-full rounded-xl bg-slate-950 border border-slate-700 px-3 py-2 text-xs text-white" />
+        <input id="cAddr" type="text" placeholder="Dirección de entrega" class="w-full rounded-xl bg-slate-950 border border-slate-700 px-3 py-2 text-xs text-white" />
+        <select id="cPay" class="w-full rounded-xl bg-slate-950 border border-slate-700 px-3 py-2 text-xs text-white">
+          <option>Efectivo</option>
+          <option>Transferencia</option>
+          <option>Tarjeta al recibir</option>
+        </select>
+        <div class="bg-slate-950 rounded-xl p-3 text-xs space-y-1 border border-slate-800">
+          <div class="flex justify-between text-slate-400"><span>Subtotal</span><span id="subTxt">0</span></div>
+          <div class="flex justify-between text-slate-400"><span>Envío</span><span id="envTxt">0</span></div>
+          <div class="flex justify-between text-white font-black text-sm pt-1 border-t border-slate-800"><span>Total</span><span id="totTxt" class="brand-text">0</span></div>
+        </div>
+        <button onclick="sendWA()" class="w-full py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs transition">
+          Enviar Pedido por WhatsApp →
+        </button>
+      </div>
+    </aside>
+  </main>
+
+  <script>
+    const CFG = ${safeData};
+    const sym = (CFG.currency || '$').split(' ')[0];
+    let activeCat = 'Todas';
+    let mode = 'domicilio';
+    let cart = {};
+
+    function cats() {
+      return ['Todas', ...new Set(CFG.products.map(p => p.cat))];
+    }
+
+    function renderCats() {
+      document.getElementById('catBar').innerHTML = cats().map(c =>
+        \`<button onclick="setCat('\${c.replace(/'/g, "\\\\'")}')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap \${activeCat === c ? 'brand-bg text-slate-950' : 'bg-slate-900 text-slate-300 border border-slate-800'}">\${c}</button>\`
+      ).join('');
+    }
+
+    function setCat(c) { activeCat = c; renderCats(); renderGrid(); }
+
+    function renderGrid() {
+      const items = activeCat === 'Todas' ? CFG.products : CFG.products.filter(p => p.cat === activeCat);
+      document.getElementById('grid').innerHTML = items.map(p => {
+        const q = cart[p.id] || 0;
+        return \`
+          <div class="rounded-2xl bg-slate-900 border border-slate-800 p-4 flex flex-col justify-between">
+            <div>
+              <div class="text-2xl mb-2">\${p.emoji}</div>
+              <h3 class="font-bold text-white text-sm">\${p.name}</h3>
+              <p class="text-xs text-slate-400 mt-1">\${p.desc}</p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between">
+              <span class="font-black text-white text-base">\${sym}\${Number(p.price).toFixed(2)}</span>
+              \${q === 0
+                ? \`<button onclick="qty(\${p.id},1)" class="px-3 py-1.5 rounded-lg brand-bg text-slate-950 text-xs font-black">+ Agregar</button>\`
+                : \`<div class="flex items-center gap-1.5"><button onclick="qty(\${p.id},-1)" class="w-6 h-6 rounded bg-slate-800 text-xs font-bold">-</button><span class="text-xs font-bold">\${q}</span><button onclick="qty(\${p.id},1)" class="w-6 h-6 rounded brand-bg text-slate-950 text-xs font-bold">+</button></div>\`
+              }
+            </div>
+          </div>\`;
+      }).join('');
+    }
+
+    function qty(id, d) {
+      cart[id] = (cart[id] || 0) + d;
+      if (cart[id] <= 0) delete cart[id];
+      renderGrid(); renderCart();
+    }
+
+    function setMode(m) {
+      mode = m;
+      document.getElementById('mDom').className = m === 'domicilio' ? 'py-2 rounded-lg text-xs font-bold brand-bg text-slate-950' : 'py-2 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300';
+      document.getElementById('mLoc').className = m === 'local' ? 'py-2 rounded-lg text-xs font-bold brand-bg text-slate-950' : 'py-2 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300';
+      document.getElementById('cAddr').style.display = m === 'domicilio' ? 'block' : 'none';
+      renderCart();
+    }
+
+    function renderCart() {
+      const entries = Object.entries(cart);
+      const count = entries.reduce((a, [, q]) => a + q, 0);
+      document.getElementById('topCount').textContent = count;
+      const box = document.getElementById('orderBox');
+      const list = document.getElementById('cartList');
+      if (!entries.length) {
+        list.innerHTML = '<p class="text-xs text-slate-500 py-4 text-center">Agrega productos para armar tu pedido.</p>';
+        box.classList.add('hidden');
+        return;
+      }
+      box.classList.remove('hidden');
+      let sub = 0;
+      list.innerHTML = entries.map(([id, q]) => {
+        const p = CFG.products.find(x => x.id === Number(id));
+        const s = p.price * q; sub += s;
+        return \`<div class="flex justify-between items-center text-xs bg-slate-950 p-2 rounded-lg border border-slate-800"><span>\${q}x \${p.name}</span><span class="font-bold">\${sym}\${s.toFixed(2)}</span></div>\`;
+      }).join('');
+      const env = mode === 'domicilio' ? Number(CFG.delivery || 0) : 0;
+      document.getElementById('subTxt').textContent = sym + sub.toFixed(2);
+      document.getElementById('envTxt').textContent = env === 0 ? 'Gratis' : sym + env.toFixed(2);
+      document.getElementById('totTxt').textContent = sym + (sub + env).toFixed(2) + ' ' + (CFG.currency.split(' ')[1] || '');
+    }
+
+    function sendWA() {
+      const entries = Object.entries(cart);
+      if (!entries.length) return;
+      const name = document.getElementById('cName').value.trim() || 'Cliente';
+      const addr = document.getElementById('cAddr').value.trim();
+      if (mode === 'domicilio' && !addr) { alert('Escribe tu dirección de entrega'); return; }
+      const pay = document.getElementById('cPay').value;
+      let sub = 0;
+      const lines = entries.map(([id, q]) => {
+        const p = CFG.products.find(x => x.id === Number(id));
+        const s = p.price * q; sub += s;
+        return \`• \${q}x \${p.name} (\${sym}\${s.toFixed(2)})\`;
+      });
+      const env = mode === 'domicilio' ? Number(CFG.delivery || 0) : 0;
+      const tot = sub + env;
+      let msg = \`🛒 *NUEVO PEDIDO — \${CFG.name}*\\n\\n👤 Cliente: \${name}\\n📦 Entrega: \${mode === 'domicilio' ? 'Domicilio (' + addr + ')' : 'Recoger en local'}\\n💳 Pago: \${pay}\\n\\n\${lines.join('\\n')}\\n\\n*Total: \${sym}\${tot.toFixed(2)}*\`;
+      window.open(\`https://wa.me/\${CFG.phone}?text=\${encodeURIComponent(msg)}\`, '_blank');
+    }
+
+    renderCats(); renderGrid(); renderCart();
+  <\/script>
+</body>
+</html>`;
+    }
+
+    function saveAndRender() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      renderProductsList();
+      document.getElementById('previewFrame').srcdoc = buildStandaloneHTML();
+    }
+
+    function setPreviewWidth(w) {
+      document.getElementById('previewFrame').style.width = w;
+    }
+
+    function downloadGeneratedSite() {
+      const html = buildStandaloneHTML();
+      const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+      const slug = (state.name || 'tienda').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `${slug}-tienda-whatsapp.html`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+
+    syncInputs();
+    saveAndRender();
+  </script>
+</body>
+</html>

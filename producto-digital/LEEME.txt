@@ -1,0 +1,11 @@
+WHATSAPP STORE BUILDER PRO v1.0
+================================
+
+Instrucciones rápidas de uso:
+1. Abre "personalizador.html" haciendo doble clic (se abre en Google Chrome, Edge o Firefox).
+2. Ingresa el nombre de tu negocio, número de WhatsApp (con código de país), moneda y color.
+3. Agrega tus productos o carga uno de los presets de ejemplo.
+4. Haz clic en "Descargar Sitio Web Listo (.html)".
+5. Renombra el archivo descargado a "index.html" dentro de una carpeta y súbelo gratis a https://app.netlify.com/drop (o Vercel / GitHub Pages).
+
+Para guiones y estrategia de venta revisa GUIA_VENTA_Y_TEXTOS.md.

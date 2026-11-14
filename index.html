@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Centro de Control Maestro — Kit de Ingresos Digitales</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 antialiased">
+
+  <!-- Header -->
+  <header class="border-b border-slate-800 bg-slate-950/90 backdrop-blur sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center text-slate-950 font-black">⚡</div>
+        <div>
+          <h1 class="font-extrabold text-white text-sm sm:text-base leading-none">Centro de Control — Ingresos Digitales</h1>
+          <p class="text-[11px] text-slate-400 mt-1">Ryzen 5 5600X · RX 6500 XT · Modo Productividad Real</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <a href="crm-clientes/index.html" class="px-3.5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs transition">
+          Abrir CRM de Clientes →
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-10">
+
+    <!-- Resumen Honestidad y Estado Real -->
+    <section class="rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900 to-emerald-950/30 border border-slate-800 p-6 sm:p-8">
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+        <div class="max-w-2xl">
+          <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-bold">
+            ✓ Todo construido y listo para facturar hoy
+          </span>
+          <h2 class="text-2xl sm:text-4xl font-black text-white mt-3">Tu Sistema de 3 Motores de Ingresos</h2>
+          <p class="text-sm text-slate-300 mt-2 leading-relaxed">
+            La base técnica, las demos interactivas publicadas online, los prospectos reales con correo electrónico sin página web, el producto digital empaquetado y el configurador pasivo ya están listos (100% sin usar tu teléfono de WhatsApp).
+          </p>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 shrink-0">
+          <div class="p-4 rounded-2xl bg-slate-950/90 border border-slate-800">
+            <p class="text-[11px] text-slate-400 uppercase font-semibold">Negocios sin web listos</p>
+            <p id="dashLeadsCount" class="text-2xl font-black text-emerald-400 mt-1">0</p>
+          </div>
+          <div class="p-4 rounded-2xl bg-slate-950/90 border border-slate-800">
+            <p class="text-[11px] text-slate-400 uppercase font-semibold">Contactados hoy</p>
+            <p id="dashContacted" class="text-2xl font-black text-cyan-400 mt-1">0</p>
+          </div>
+          <div class="p-4 rounded-2xl bg-slate-950/90 border border-emerald-500/30 col-span-2 sm:col-span-1">
+            <p class="text-[11px] text-slate-400 uppercase font-semibold">Ingresos registrados</p>
+            <p id="dashRevenue" class="text-2xl font-black text-white mt-1">$0 USD</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Los 3 Pilares -->
+    <section class="grid lg:grid-cols-3 gap-6">
+
+      <!-- PILAR 1: AGENCIA Y CLIENTES -->
+      <article class="rounded-3xl bg-slate-900 border border-slate-800 p-6 flex flex-col justify-between hover:border-emerald-500/50 transition">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold">Pilar 1 · Mayor Ingreso</span>
+            <span class="text-xs font-bold text-slate-400">$79 – $199 USD / cliente</span>
+          </div>
+          <h3 class="text-xl font-black text-white">Agencia Web + CRM de Clientes Reales</h3>
+          <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+            Portafolio comercial completo, 3 demos funcionales para enviar a negocios y una lista real de comercios con teléfono que hoy no tienen sitio web.
+          </p>
+
+          <div class="mt-5 space-y-2 text-xs">
+            <a href="crm-clientes/index.html" class="flex items-center justify-between p-3 rounded-xl bg-emerald-500/15 border border-emerald-500/30 hover:bg-emerald-500/25 text-emerald-200 font-bold transition">
+              <span>✉ CRM + Propuestas por Email 1-Clic</span>
+              <span>Abrir →</span>
+            </a>
+            <a href="agencia-portafolio/index.html" class="flex items-center justify-between p-3 rounded-xl bg-slate-950 border border-slate-800 hover:border-slate-600 text-slate-200 font-semibold transition">
+              <span>🌐 Portafolio Oficial + Cotizador</span>
+              <span>Abrir →</span>
+            </a>
+            <div class="grid grid-cols-3 gap-2 pt-1">
+              <a href="demos/restaurante-pedidos/index.html" class="p-2.5 rounded-xl bg-slate-950 border border-slate-800 hover:border-orange-500/50 text-center text-[11px] font-semibold text-orange-300 transition">🍔 Demo Comida</a>
+              <a href="demos/clinica-reservas/index.html" class="p-2.5 rounded-xl bg-slate-950 border border-slate-800 hover:border-cyan-500/50 text-center text-[11px] font-semibold text-cyan-300 transition">🦷 Demo Clínica</a>
+              <a href="demos/inmobiliaria-servicios/index.html" class="p-2.5 rounded-xl bg-slate-950 border border-slate-800 hover:border-violet-500/50 text-center text-[11px] font-semibold text-violet-300 transition">🏢 Demo Servicios</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-6 pt-4 border-t border-slate-800 text-[11px] text-slate-400">
+          Canal activo: correo electrónico profesional (`ifrosg@gmail.com`) sin usar tu teléfono personal.
+        </div>
+      </article>
+
+      <!-- PILAR 4: PRODUCTO DIGITAL -->
+      <article class="rounded-3xl bg-slate-900 border border-slate-800 p-6 flex flex-col justify-between hover:border-violet-500/50 transition">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <span class="px-3 py-1 rounded-full bg-violet-500/20 text-violet-300 text-xs font-bold">Pilar 4 · Producto Listo</span>
+            <span class="text-xs font-bold text-slate-400">$19 – $29 USD / venta</span>
+          </div>
+          <h3 class="text-xl font-black text-white">WhatsApp Store Builder Pro</h3>
+          <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+            Herramienta visual que exporta tiendas y menús HTML autónomos listos para subir gratis. Puedes vender el `.zip` en Gumroad o usarlo para fabricar webs a clientes en 5 minutos.
+          </p>
+
+          <div class="mt-5 space-y-2 text-xs">
+            <a href="producto-digital/personalizador.html" class="flex items-center justify-between p-3 rounded-xl bg-violet-500/15 border border-violet-500/30 hover:bg-violet-500/25 text-violet-200 font-bold transition">
+              <span>🛠️ Abrir Generador Visual</span>
+              <span>Abrir →</span>
+            </a>
+            <a href="producto-digital/WhatsApp_Store_Builder_Pro_v1.zip" download class="flex items-center justify-between p-3 rounded-xl bg-slate-950 border border-slate-800 hover:border-slate-600 text-slate-200 font-semibold transition">
+              <span>📦 Descargar Paquete (.ZIP) para Gumroad</span>
+              <span>Bajar ↓</span>
+            </a>
+            <a href="producto-digital/GUIA_VENTA_Y_TEXTOS.md" target="_blank" class="flex items-center justify-between p-3 rounded-xl bg-slate-950 border border-slate-800 hover:border-slate-600 text-slate-300 font-semibold transition">
+              <span>📝 Textos Gumroad / Fiverr + Deploy Gratis</span>
+              <span>Leer →</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="mt-6 pt-4 border-t border-slate-800 text-[11px] text-slate-400">
+          Publica el `.zip` hoy en Gumroad/Ko-fi usando los textos listos para copiar.
+        </div>
+      </article>
+
+      <!-- PILAR 2: INGRESO PASIVO -->
+      <article class="rounded-3xl bg-slate-900 border border-slate-800 p-6 flex flex-col justify-between hover:border-cyan-500/50 transition">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <span class="px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-300 text-xs font-bold">Pilar 2 · 100% Pasivo</span>
+            <span class="text-xs font-bold text-slate-400">~$7 – $16 USD / mes</span>
+          </div>
+          <h3 class="text-xl font-black text-white">Ancho de Banda Pasivo (Grass, Pawns, Honeygain)</h3>
+          <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+            Supera a la minería con tu RX 6500 XT sin gastar electricidad extra ni calentar tu equipo. Incluye calculadora realista y script PowerShell para verificar/instalar.
+          </p>
+
+          <div class="mt-5 space-y-2 text-xs">
+            <a href="ingreso-pasivo/index.html" class="flex items-center justify-between p-3 rounded-xl bg-cyan-500/15 border border-cyan-500/30 hover:bg-cyan-500/25 text-cyan-200 font-bold transition">
+              <span>🌐 Panel de Activación &amp; Calculadora</span>
+              <span>Abrir →</span>
+            </a>
+            <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 text-slate-300">
+              <p class="font-semibold text-white mb-1">Verificador PowerShell Windows:</p>
+              <code class="text-[11px] text-emerald-400 break-all">.\ingreso-pasivo\configurar_ingreso_pasivo.ps1</code>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-6 pt-4 border-t border-slate-800 text-[11px] text-slate-400">
+          Requiere 3 minutos para iniciar sesión 1 vez con tu correo en cada plataforma.
+        </div>
+      </article>
+
+    </section>
+
+    <!-- Checklist de Hoy en 4 Pasos -->
+    <section class="rounded-3xl bg-slate-900 border border-slate-800 p-6 sm:p-8">
+      <h3 class="text-lg font-extrabold text-white mb-4">Plan de Acción Rápida (Primeros 20 Minutos)</h3>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+        <div class="p-4 rounded-2xl bg-slate-950 border border-slate-800">
+          <span class="text-emerald-400 font-black text-sm">1. Revisa los borradores en Gmail</span>
+          <p class="text-slate-400 mt-1.5">Tienes propuestas personalizadas listas en tu correo <strong>ifrosg@gmail.com</strong> dirigidas a negocios reales sin sitio web.</p>
+        </div>
+        <div class="p-4 rounded-2xl bg-slate-950 border border-slate-800">
+          <span class="text-emerald-400 font-black text-sm">2. Contacta más leads en el CRM</span>
+          <p class="text-slate-400 mt-1.5">Entra al <strong>CRM</strong>, filtra por ciudad y pulsa <strong>"Redactar Propuesta por Email"</strong> para abrir Gmail Web en 1 clic.</p>
+        </div>
+        <div class="p-4 rounded-2xl bg-slate-950 border border-slate-800">
+          <span class="text-emerald-400 font-black text-sm">3. Activa ingreso pasivo</span>
+          <p class="text-slate-400 mt-1.5">Abre el módulo de <strong>Ingreso Pasivo</strong>, crea tus cuentas en Grass, Pawns.app y Honeygain y déjalas minimizadas en Windows.</p>
+        </div>
+        <div class="p-4 rounded-2xl bg-slate-950 border border-slate-800">
+          <span class="text-emerald-400 font-black text-sm">4. Sube el .ZIP a Gumroad</span>
+          <p class="text-slate-400 mt-1.5">Copia los textos de <strong>GUIA_VENTA_Y_TEXTOS.md</strong> y publica <code>WhatsApp_Store_Builder_Pro_v1.zip</code> a $19 USD.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="crm-clientes/prospectos_data.js"></script>
+  <script>
+    const leads = Array.isArray(window.PROSPECTOS_DATA) ? window.PROSPECTOS_DATA : [];
+    const statusMap = JSON.parse(localStorage.getItem('impulsoweb_crm_status_v1') || '{}');
+    const salesMap = JSON.parse(localStorage.getItem('impulsoweb_crm_sales_v1') || '{}');
+
+    document.getElementById('dashLeadsCount').textContent = leads.length;
+
+    let contacted = 0, revenue = 0;
+    leads.forEach(l => {
+      const st = statusMap[l.id] || 'Nuevo';
+      if (st !== 'Nuevo' && st !== 'Descartado') contacted++;
+      if (st === 'Vendido') revenue += (salesMap[l.id] || 0);
+    });
+
+    document.getElementById('dashContacted').textContent = contacted;
+    document.getElementById('dashRevenue').textContent = `$${revenue.toFixed(0)} USD`;
+  </script>
+</body>
+</html>

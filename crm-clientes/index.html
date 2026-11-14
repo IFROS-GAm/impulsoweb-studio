@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CRM &amp; Buscador de Clientes sin Web (Email) — ImpulsoWeb</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 antialiased">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-40 bg-slate-950/90 backdrop-blur border-b border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 py-3.5 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <a href="../index.html" class="text-xs px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700">← Panel Maestro</a>
+        <div>
+          <h1 class="font-extrabold text-white text-base sm:text-lg leading-none">CRM Prospección Real por Email (Sin Sitio Web)</h1>
+          <p class="text-xs text-emerald-400 mt-1">Comercios reales verificados sin web en OpenStreetMap · 0% WhatsApp</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button onclick="switchTab('prospectos')" id="tabBtnProspectos" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-emerald-500 text-slate-950 transition">📋 Prospectos</button>
+        <button onclick="switchTab('guiones')" id="tabBtnGuiones" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition">✉ Guiones Email</button>
+        <a href="prospectos_sin_web.csv" download class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-900 border border-slate-700 hover:border-slate-500 text-slate-200 transition">⬇ CSV</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 py-8">
+
+    <!-- Métricas rápidas -->
+    <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+      <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800">
+        <p class="text-xs text-slate-400">Negocios encontrados</p>
+        <p id="statTotal" class="text-2xl font-black text-white mt-1">0</p>
+      </div>
+      <div class="p-4 rounded-2xl bg-slate-900 border border-emerald-500/30">
+        <p class="text-xs text-slate-400">Con Email directo</p>
+        <p id="statWithEmail" class="text-2xl font-black text-emerald-400 mt-1">0</p>
+      </div>
+      <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800">
+        <p class="text-xs text-slate-400">Contactados</p>
+        <p id="statContacted" class="text-2xl font-black text-cyan-400 mt-1">0</p>
+      </div>
+      <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800">
+        <p class="text-xs text-slate-400">Interesados / Demo</p>
+        <p id="statInterested" class="text-2xl font-black text-amber-400 mt-1">0</p>
+      </div>
+      <div class="p-4 rounded-2xl bg-slate-900 border border-emerald-500/40 col-span-2 lg:col-span-1">
+        <p class="text-xs text-slate-400">Ventas Cerradas</p>
+        <p id="statClosed" class="text-2xl font-black text-emerald-400 mt-1">0 ($0)</p>
+      </div>
+    </div>
+
+    <!-- PESTAÑA 1: TABLA DE PROSPECTOS -->
+    <section id="panelProspectos">
+      <!-- Filtros -->
+      <div class="rounded-2xl bg-slate-900 border border-slate-800 p-4 mb-6 grid sm:grid-cols-2 lg:grid-cols-5 gap-3">
+        <input id="filterSearch" type="search" oninput="renderTable()" placeholder="Buscar nombre, email o dirección..." class="rounded-xl bg-slate-950 border border-slate-700 px-3.5 py-2 text-sm text-white focus:outline-none focus:border-emerald-500" />
+        <select id="filterChannel" onchange="renderTable()" class="rounded-xl bg-slate-950 border border-slate-700 px-3.5 py-2 text-sm text-white">
+          <option value="email" selected>✉ Solo con Email directo</option>
+          <option value="all">Todos (Email + Teléfono)</option>
+        </select>
+        <select id="filterCity" onchange="renderTable()" class="rounded-xl bg-slate-950 border border-slate-700 px-3.5 py-2 text-sm text-white">
+          <option value="">Todas las ciudades</option>
+        </select>
+        <select id="filterCat" onchange="renderTable()" class="rounded-xl bg-slate-950 border border-slate-700 px-3.5 py-2 text-sm text-white">
+          <option value="">Todas las categorías</option>
+        </select>
+        <select id="filterStatus" onchange="renderTable()" class="rounded-xl bg-slate-950 border border-slate-700 px-3.5 py-2 text-sm text-white">
+          <option value="">Todos los estados</option>
+          <option value="Nuevo">🟡 Nuevo (sin contactar)</option>
+          <option value="Contactado">🔵 Contactado</option>
+          <option value="Interesado">🟠 Interesado</option>
+          <option value="Vendido">🟢 Vendido</option>
+          <option value="Descartado">⚫ Descartado</option>
+        </select>
+      </div>
+
+      <!-- Aviso sobre script Python -->
+      <div class="mb-4 px-4 py-3 rounded-xl bg-slate-900/70 border border-slate-800 text-xs text-slate-300 flex flex-wrap items-center justify-between gap-2">
+        <span>💡 Todos los enlaces de demos en las propuestas apuntan al sitio público en vivo: <code class="text-emerald-400">https://ifros-gam.github.io/impulsoweb-studio/</code></span>
+        <span class="text-slate-400">Mostrando <strong id="shownCount" class="text-white">0</strong> registros</span>
+      </div>
+
+      <!-- Tabla -->
+      <div class="rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b border-slate-800 bg-slate-950/70 text-[11px] uppercase tracking-wider text-slate-400">
+                <th class="py-3.5 px-4">Negocio</th>
+                <th class="py-3.5 px-4">Categoría / Demo</th>
+                <th class="py-3.5 px-4">Ciudad</th>
+                <th class="py-3.5 px-4">Email / Contacto</th>
+                <th class="py-3.5 px-4">Estado CRM</th>
+                <th class="py-3.5 px-4 text-right">Acción</th>
+              </tr>
+            </thead>
+            <tbody id="leadsTbody" class="divide-y divide-slate-800/70 text-sm">
+              <!-- Dinámico -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- PESTAÑA 2: GUIONES Y OBJECIONES -->
+    <section id="panelGuiones" class="hidden space-y-6">
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="rounded-2xl bg-slate-900 border border-slate-800 p-6 space-y-4">
+          <span class="px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold">Paso 1 · Primer Correo (Frío / Directo)</span>
+          <h3 class="text-lg font-bold text-white">Asunto + Cuerpo de Alta Conversión</h3>
+          <p class="text-xs text-slate-400">Directo al grano, muestra que investigaste el negocio e incluye el enlace público funcionando.</p>
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 text-sm text-slate-200 whitespace-pre-line" id="script1">Asunto: Una propuesta web rápida para [NOMBRE_NEGOCIO] (sin mensualidades)
+
+Hola, equipo de [NOMBRE_NEGOCIO],
+
+Estaba revisando comercios recomendados en [CIUDAD] y noté que aparecen en el mapa, pero todavía no cuentan con un sitio web propio donde sus clientes puedan consultar precios, horarios o enviar pedidos/reservas directamente.
+
+En ImpulsoWeb Studio creamos páginas web profesionales listas en 24 horas (pago único desde $79–$129 USD, sin comisiones ni mensualidades).
+
+Aquí pueden probar una demo interactiva funcionando para su rubro:
+👉 https://ifros-gam.github.io/impulsoweb-studio/agencia-portafolio/
+
+Si les interesa ver cómo quedaría personalizada con la marca, colores y precios de [NOMBRE_NEGOCIO], solo respondan este correo y les preparo una vista previa sin compromiso.
+
+Saludos,
+ImpulsoWeb Studio
+ifrosg@gmail.com</div>
+          <button onclick="copyScript('script1')" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-emerald-500 hover:text-slate-950 text-white text-xs font-bold transition">Copiar guion completo</button>
+        </div>
+
+        <div class="rounded-2xl bg-slate-900 border border-slate-800 p-6 space-y-4">
+          <span class="px-2.5 py-1 rounded-full bg-cyan-500/20 text-cyan-300 text-xs font-bold">Paso 2 · Respuesta cuando muestran interés</span>
+          <h3 class="text-lg font-bold text-white">Guion de Cierre Rápido (24h)</h3>
+          <p class="text-xs text-slate-400">Cuando respondan que sí les interesa, pídeles su lista de precios o menú y ofrece mostrarlo antes del pago final.</p>
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 text-sm text-slate-200 whitespace-pre-line" id="script2">¡Excelente! Para dejar lista la versión personalizada de [NOMBRE_NEGOCIO] en menos de 24 horas, solo necesito que me respondan este correo con:
+
+1. Su logotipo o colores preferidos (si tienen).
+2. Su lista de servicios/platillos y precios (puede ser foto, PDF o texto).
+3. El correo o canal donde desean recibir las solicitudes de sus clientes.
+
+Con eso monto su página en vivo para que la prueben desde su celular antes de publicarla en su dominio definitivo.
+
+Quedo atento,
+ImpulsoWeb Studio</div>
+          <button onclick="copyScript('script2')" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-cyan-400 hover:text-slate-950 text-white text-xs font-bold transition">Copiar guion de cierre</button>
+        </div>
+      </div>
+
+      <!-- Respuestas a Objeciones -->
+      <div class="rounded-2xl bg-slate-900 border border-slate-800 p-6">
+        <h3 class="text-xl font-extrabold text-white mb-5">Respuestas Listas a las 3 Objeciones Clásicas</h3>
+        <div class="grid md:grid-cols-3 gap-5">
+          <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+            <p class="text-xs font-bold text-amber-400 uppercase">Objeción #1</p>
+            <h4 class="font-bold text-white">"Ya tenemos Instagram / Facebook"</h4>
+            <p class="text-xs text-slate-300 leading-relaxed">"Instagram es genial para atraer atención, pero quien busca en Google Maps casi nunca tiene paciencia para buscar precios entre decenas de publicaciones. Con su propia web ponen un único enlace en la biografía y el cliente elige sus productos o agenda en 20 segundos."</p>
+          </div>
+          <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+            <p class="text-xs font-bold text-amber-400 uppercase">Objeción #2</p>
+            <h4 class="font-bold text-white">"Es muy caro / No tenemos presupuesto"</h4>
+            <p class="text-xs text-slate-300 leading-relaxed">"La ventaja es que es un pago único sin mensualidades ni comisiones del 25%–30% por cada venta como en las apps externas. Con solo 3 o 4 ventas nuevas desde Google, la web se paga sola para todo el año. También podemos empezar con la versión esencial de $79 USD."</p>
+          </div>
+          <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+            <p class="text-xs font-bold text-amber-400 uppercase">Objeción #3</p>
+            <h4 class="font-bold text-white">"Ahora no tenemos tiempo"</h4>
+            <p class="text-xs text-slate-300 leading-relaxed">"Justo por eso me encargo de todo: solo envíenme una foto de su carta o lista de precios respondiendo este correo y en 24 horas les entrego la página funcionando para que solo la revisen."</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Modal Redactar Propuesta por Email -->
+  <div id="emailModal" class="fixed inset-0 z-50 bg-black/80 hidden items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-xl w-full p-6 space-y-4 shadow-2xl">
+      <div class="flex justify-between items-start gap-4">
+        <div>
+          <span id="modalCatBadge" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300">Restaurante</span>
+          <h3 id="modalTitle" class="text-lg font-extrabold text-white mt-1.5">Negocio</h3>
+          <p id="modalSub" class="text-xs text-slate-400"></p>
+        </div>
+        <button onclick="closeEmailModal()" class="text-slate-400 hover:text-white text-xl leading-none">&times;</button>
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold text-slate-300 mb-1">Asunto del correo:</label>
+        <input id="modalSubject" type="text" class="w-full rounded-xl bg-slate-950 border border-slate-700 px-3.5 py-2 text-sm text-white focus:outline-none focus:border-emerald-500" />
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold text-slate-300 mb-1">Cuerpo del correo (editable):</label>
+        <textarea id="modalMessage" rows="9" class="w-full rounded-xl bg-slate-950 border border-slate-700 p-3.5 text-sm text-slate-100 focus:outline-none focus:border-emerald-500"></textarea>
+      </div>
+
+      <div class="flex flex-wrap items-center justify-between gap-2 pt-2">
+        <div class="flex gap-2">
+          <a id="modalDemoLink" target="_blank" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-cyan-300">Ver Demo ↗</a>
+          <button onclick="copyModalMsg()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200">Copiar Texto</button>
+        </div>
+        <div class="flex gap-2">
+          <a id="modalMailtoBtn" onclick="markContactedFromModal()" class="px-3.5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs transition">
+            App Correo
+          </a>
+          <a id="modalGmailBtn" target="_blank" rel="noopener" onclick="markContactedFromModal()" class="px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs transition">
+            Abrir en Gmail Web →
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Datos generados por buscador_clientes.py -->
+  <script src="prospectos_data.js"></script>
+  <script>
+    const PUBLIC_BASE = 'https://ifros-gam.github.io/impulsoweb-studio';
+    const LEADS = Array.isArray(window.PROSPECTOS_DATA) ? window.PROSPECTOS_DATA : [];
+    const STORAGE_KEY = 'impulsoweb_crm_status_v1';
+    const SALES_KEY = 'impulsoweb_crm_sales_v1';
+
+    let statusMap = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    let salesMap = JSON.parse(localStorage.getItem(SALES_KEY) || '{}');
+    let activeLead = null;
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(statusMap));
+      localStorage.setItem(SALES_KEY, JSON.stringify(salesMap));
+      updateStats();
+    }
+
+    function populateFilters() {
+      const cities = [...new Set(LEADS.map(l => l.ciudad))].sort();
+      const cats = [...new Set(LEADS.map(l => l.categoria))].sort();
+      const citySel = document.getElementById('filterCity');
+      const catSel = document.getElementById('filterCat');
+      cities.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c; opt.textContent = c;
+        citySel.appendChild(opt);
+      });
+      cats.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c; opt.textContent = c;
+        catSel.appendChild(opt);
+      });
+    }
+
+    function getStatus(id) {
+      return statusMap[id] || 'Nuevo';
+    }
+
+    function changeStatus(id, val) {
+      statusMap[id] = val;
+      if (val === 'Vendido') {
+        const current = salesMap[id] || 129;
+        const amount = prompt("¿Por cuánto cerraste este proyecto (USD)?", current);
+        if (amount !== null && !isNaN(parseFloat(amount))) {
+          salesMap[id] = parseFloat(amount);
+        }
+      }
+      saveState();
+      renderTable();
+    }
+
+    function updateStats() {
+      document.getElementById('statTotal').textContent = LEADS.length;
+      document.getElementById('statWithEmail').textContent = LEADS.filter(l => !!l.email).length;
+      let contacted = 0, interested = 0, closed = 0, closedUsd = 0;
+      LEADS.forEach(l => {
+        const st = getStatus(l.id);
+        if (st === 'Contactado') contacted++;
+        if (st === 'Interesado') interested++;
+        if (st === 'Vendido') {
+          closed++;
+          closedUsd += (salesMap[l.id] || 0);
+        }
+      });
+      document.getElementById('statContacted').textContent = contacted;
+      document.getElementById('statInterested').textContent = interested;
+      document.getElementById('statClosed').textContent = `${closed} ($${closedUsd.toFixed(0)} USD)`;
+    }
+
+    function renderTable() {
+      const q = document.getElementById('filterSearch').value.trim().toLowerCase();
+      const ch = document.getElementById('filterChannel').value;
+      const city = document.getElementById('filterCity').value;
+      const cat = document.getElementById('filterCat').value;
+      const stFilter = document.getElementById('filterStatus').value;
+
+      const filtered = LEADS.filter(l => {
+        const st = getStatus(l.id);
+        if (ch === 'email' && !l.email) return false;
+        if (city && l.ciudad !== city) return false;
+        if (cat && l.categoria !== cat) return false;
+        if (stFilter && st !== stFilter) return false;
+        if (q && !l.nombre.toLowerCase().includes(q) && !l.direccion.toLowerCase().includes(q) && !(l.email || '').toLowerCase().includes(q)) return false;
+        return true;
+      });
+
+      document.getElementById('shownCount').textContent = filtered.length;
+      const tbody = document.getElementById('leadsTbody');
+
+      if (!filtered.length) {
+        tbody.innerHTML = `<tr><td colspan="6" class="py-12 text-center text-slate-500">No hay negocios que coincidan con el filtro.</td></tr>`;
+        return;
+      }
+
+      const demoNames = {
+        restaurante: '🍔 Menú Digital',
+        clinica: '🦷 Agenda Citas',
+        servicios: '🏢 Cotizador Web'
+      };
+
+      const badgeColors = {
+        'Nuevo': 'bg-amber-500/15 text-amber-300 border-amber-500/30',
+        'Contactado': 'bg-cyan-500/15 text-cyan-300 border-cyan-500/30',
+        'Interesado': 'bg-orange-500/15 text-orange-300 border-orange-500/30',
+        'Vendido': 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30',
+        'Descartado': 'bg-slate-800 text-slate-400 border-slate-700'
+      };
+
+      tbody.innerHTML = filtered.map(l => {
+        const st = getStatus(l.id);
+        return `
+          <tr class="hover:bg-slate-800/40 transition">
+            <td class="py-3.5 px-4">
+              <div class="font-bold text-white">${l.nombre}</div>
+              <div class="text-xs text-slate-400 flex items-center gap-2 mt-0.5">
+                <span>${l.direccion}</span>
+                <a href="${l.osm_url}" target="_blank" rel="noopener" class="text-cyan-400 hover:underline">Mapa ↗</a>
+              </div>
+            </td>
+            <td class="py-3.5 px-4">
+              <div class="text-slate-200 font-medium">${l.categoria}</div>
+              <div class="text-[11px] text-emerald-400">${demoNames[l.demo_recomendada] || 'Web Negocio'}</div>
+            </td>
+            <td class="py-3.5 px-4 text-xs text-slate-300">
+              <div>${l.ciudad}</div>
+              <div class="text-slate-500">${l.pais}</div>
+            </td>
+            <td class="py-3.5 px-4 text-xs">
+              ${l.email ? `<div class="font-semibold text-emerald-400 break-all">${l.email}</div>` : `<div class="text-slate-500 italic">Sin email público</div>`}
+              ${l.telefono_raw ? `<div class="font-mono text-[11px] text-slate-400 mt-0.5">${l.telefono_raw}</div>` : ''}
+            </td>
+            <td class="py-3.5 px-4">
+              <select onchange="changeStatus(${l.id}, this.value)" class="rounded-lg border px-2.5 py-1 text-xs font-semibold bg-slate-950 ${badgeColors[st]}">
+                <option value="Nuevo" ${st==='Nuevo'?'selected':''}>🟡 Nuevo</option>
+                <option value="Contactado" ${st==='Contactado'?'selected':''}>🔵 Contactado</option>
+                <option value="Interesado" ${st==='Interesado'?'selected':''}>🟠 Interesado</option>
+                <option value="Vendido" ${st==='Vendido'?'selected':''}>🟢 Vendido</option>
+                <option value="Descartado" ${st==='Descartado'?'selected':''}>⚫ Descartado</option>
+              </select>
+            </td>
+            <td class="py-3.5 px-4 text-right">
+              <button onclick="openEmailModal(${l.id})" class="px-3.5 py-2 rounded-xl ${l.email ? 'bg-emerald-500 hover:bg-emerald-400 text-slate-950' : 'bg-slate-800 hover:bg-slate-700 text-slate-200'} font-bold text-xs transition whitespace-nowrap">
+                ${l.email ? 'Redactar Propuesta por Email' : 'Generar Propuesta'}
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function getDemoPublicUrl(demoType) {
+      if (demoType === 'restaurante') return `${PUBLIC_BASE}/demos/restaurante-pedidos/`;
+      if (demoType === 'clinica') return `${PUBLIC_BASE}/demos/clinica-reservas/`;
+      return `${PUBLIC_BASE}/demos/inmobiliaria-servicios/`;
+    }
+
+    function getDemoLocalPath(demoType) {
+      if (demoType === 'restaurante') return '../demos/restaurante-pedidos/index.html';
+      if (demoType === 'clinica') return '../demos/clinica-reservas/index.html';
+      return '../demos/inmobiliaria-servicios/index.html';
+    }
+
+    function openEmailModal(id) {
+      activeLead = LEADS.find(l => l.id === id);
+      if (!activeLead) return;
+      document.getElementById('modalCatBadge').textContent = activeLead.categoria;
+      document.getElementById('modalTitle').textContent = activeLead.nombre;
+      document.getElementById('modalSub').textContent = `${activeLead.ciudad} · ${activeLead.email || activeLead.telefono_raw}`;
+      document.getElementById('modalDemoLink').href = getDemoLocalPath(activeLead.demo_recomendada);
+
+      const demoUrl = getDemoPublicUrl(activeLead.demo_recomendada);
+      const offer = activeLead.demo_recomendada === 'restaurante'
+        ? 'un menú digital interactivo con carrito de pedidos para recibir órdenes sin pagar comisiones a plataformas externas'
+        : activeLead.demo_recomendada === 'clinica'
+          ? 'una página web profesional con catálogo de tratamientos y agenda de citas en línea'
+          : 'una página web profesional con catálogo de servicios y calculadora instantánea de cotizaciones';
+
+      const cityShort = activeLead.ciudad.split('(')[0].trim();
+      document.getElementById('modalSubject').value = `Propuesta web en 24h para ${activeLead.nombre} (sin mensualidades)`;
+      document.getElementById('modalMessage').value =
+`Hola, equipo de ${activeLead.nombre},
+
+Estaba revisando comercios de ${activeLead.categoria.toLowerCase()} en ${cityShort} y noté que aparecen en el mapa, pero todavía no cuentan con un sitio web propio enlazado.
+
+En ImpulsoWeb Studio diseñamos ${offer}, listo en 24 horas y con un pago único desde $79 USD (sin mensualidades ni comisiones por venta).
+
+Pueden probar aquí una demo real funcionando que preparamos para su sector:
+${demoUrl}
+
+Y conocer nuestro portafolio y cotizador aquí:
+${PUBLIC_BASE}/agencia-portafolio/
+
+Si les gustaría ver un boceto personalizado con el nombre, colores y precios de ${activeLead.nombre}, solo respondan este correo y se los envío sin compromiso.
+
+Saludos cordiales,
+ImpulsoWeb Studio`;
+
+      updateModalLinks();
+      const m = document.getElementById('emailModal');
+      m.classList.remove('hidden'); m.classList.add('flex');
+    }
+
+    function closeEmailModal() {
+      const m = document.getElementById('emailModal');
+      m.classList.add('hidden'); m.classList.remove('flex');
+    }
+
+    function updateModalLinks() {
+      if (!activeLead) return;
+      const to = activeLead.email || '';
+      const sub = document.getElementById('modalSubject').value;
+      const body = document.getElementById('modalMessage').value;
+      document.getElementById('modalMailtoBtn').href = `mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(sub)}&body=${encodeURIComponent(body)}`;
+      document.getElementById('modalGmailBtn').href = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(to)}&su=${encodeURIComponent(sub)}&body=${encodeURIComponent(body)}`;
+    }
+    document.getElementById('modalSubject').addEventListener('input', updateModalLinks);
+    document.getElementById('modalMessage').addEventListener('input', updateModalLinks);
+
+    function markContactedFromModal() {
+      if (activeLead && getStatus(activeLead.id) === 'Nuevo') {
+        statusMap[activeLead.id] = 'Contactado';
+        saveState();
+        renderTable();
+      }
+    }
+
+    function copyModalMsg() {
+      const txt = `Asunto: ${document.getElementById('modalSubject').value}\n\n${document.getElementById('modalMessage').value}`;
+      navigator.clipboard.writeText(txt);
+      alert("Propuesta copiada al portapapeles.");
+    }
+
+    function switchTab(tab) {
+      const p1 = document.getElementById('panelProspectos');
+      const p2 = document.getElementById('panelGuiones');
+      const b1 = document.getElementById('tabBtnProspectos');
+      const b2 = document.getElementById('tabBtnGuiones');
+      if (tab === 'prospectos') {
+        p1.classList.remove('hidden'); p2.classList.add('hidden');
+        b1.className = "px-3.5 py-2 rounded-xl text-xs font-bold bg-emerald-500 text-slate-950 transition";
+        b2.className = "px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition";
+      } else {
+        p2.classList.remove('hidden'); p1.classList.add('hidden');
+        b2.className = "px-3.5 py-2 rounded-xl text-xs font-bold bg-emerald-500 text-slate-950 transition";
+        b1.className = "px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition";
+      }
+    }
+
+    function copyScript(id) {
+      navigator.clipboard.writeText(document.getElementById(id).textContent);
+      alert("Guion copiado.");
+    }
+
+    populateFilters();
+    updateStats();
+    renderTable();
+  </script>
+</body>
+</html>
